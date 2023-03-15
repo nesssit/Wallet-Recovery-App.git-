@@ -1,49 +1,31 @@
-# React Native Typescript examples
+Web3 Wallet Recovery App
+Recover your web3 wallet using a mnemonic seed phrase.
 
-Learn React Native (version 0.70 with Typescript) by easy-to-difficult examples.
+The application contains one home screen where the user can enter his mnemonic seed phrase to recover his address and private key. The user address is listed in modal components so far to fulfil the requirements of showing balance along with the address. Private keys are stored in keychains or keychain stores.
 
-_For more basic examples, see [React Native Expo examples](https://github.com/robinhuy/react-native-expo-examples)_
+Tech Stack
+React Native
+React Native Paper Furthermore, important packages used are ethers, ethereum-wallet and rn-nodify to deal with web3 blockchain networks for react native applications like this one and react-native-key-chains are used to store secure/api/sensitive keys.
+Suggestions: We can go for EXPO GO to build fast in addition we can anytime eject back to create-react-native app.
 
-## Run project in development
+Architecture
+The root directory contains the src folder as the source directory.
+Inside src following directories are as follows
 
-- Setting up the development environment: https://reactnative.dev/docs/environment-setup.
+components: contains screens components
+modules: contains reusable components like BottomTab
+packages: contains hooks, APIs and reusable methods
+redux: contains state management tools like redux
+Each folder has its significance where it fulfils the code-separation concern while taking care of scalability.
 
-- Install dependencies: `yarn` (or `npm install`). On iOS run: `npx pod-install`.
+Security
+Only one method is used in the repository currently is secure using react-native-key-chain.
 
-- Run on Android: `yarn android` (or `npm run android`).
+Recommended by react-native docs to store secure keys in keychain services or keychains.
 
-- Run on iOS: `yarn ios` (or `npm run ios`).
+Releasing
+For the google play store, we need to sign the APK using the SHA256 key and upload the APK on the play store.
 
-## Change example
+For apple stores, first, we need a developer account followed by uploading a signed aab.
 
-Modify code in `App.tsx`, each example is an application.
-
-## Preview
-
-### 1. Quiz Game
-
-Learn how to use: **Type Script static type checking**, **React Hook useEffect + Timer**
-
-<img src="https://user-images.githubusercontent.com/12640832/101762123-9842e080-3b0f-11eb-951a-82fae0c2481b.gif" width="250" alt="Quiz Game" />
-
-### 2. Booking Car
-
-Learn how to use: **Native Base + React Native Vector Icons**, **React Native Maps + React Native Maps Directions**, **Google Map API**, **Keyboard + Keyboard Event**
-
-<img src="https://user-images.githubusercontent.com/12640832/101765164-85320f80-3b13-11eb-8066-a5d4436ebd90.gif" width="250" alt="Booking Car" />
-
-Note: To run this example, you must get & config Google Map API KEY for [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) or [iOS](https://developers.google.com/maps/documentation/ios-sdk/get-api-key)
-
-### 3. Gmail clone
-
-Learn how to use: **API Sauce**, **MobX + MobX React Lite**, **React Context**, **React Navigation Authentication flows + useFocusEffect**, **React Native Web View**
-
-<img src="https://user-images.githubusercontent.com/12640832/102325797-2d355600-3fb6-11eb-9975-dd8849782b48.gif" width="250" alt="Gmail clone" />
-
-Note: To run this example, you must start the server ([https://github.com/robinhuy/fake-api-nodejs](https://github.com/robinhuy/fake-api-nodejs)) in folder `server`:
-
-```
-  cd server
-  yarn
-  yarn start
-```
+We can use Over The Air update to directly release the javascript changes to the user's phone, bypassing the store review. Microsoft CodePush provides this service so far to my knowledge.
