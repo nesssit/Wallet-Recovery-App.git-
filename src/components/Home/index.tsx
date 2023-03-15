@@ -5,6 +5,7 @@ import {mnemonicToSeedSync} from 'bip39';
 import hdKey from 'ethereumjs-wallet/src/hdkey';
 import * as Keychain from 'react-native-keychain';
 import ethers from 'ethers';
+import {FontAwesome5Icon} from 'react-native-vector-icons';
 
 interface Account {
   address: string;
@@ -15,6 +16,8 @@ const HomeScreen: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [visible, setVisible] = useState<boolean>(false);
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const account = '0x51D3Ff1D169A12c496001825f8931c031B1257ac';
+  const balance = 0.0022;
 
   const handleInputChange = (value: string) => {
     setPhrase(value);
@@ -81,6 +84,20 @@ const HomeScreen: React.FC = () => {
           onDismiss={() => setVisible(false)}
           contentContainerStyle={styles.modalContainerStyle}>
           <View>
+            <View style={styles.root}>
+              <View style={styles.ethBalanceContainer}>
+                <Text style={styles.balance}>{balance}ETH</Text>
+              </View>
+              <View style={styles.flexContainer}>
+                <View>
+                  <Text>Account</Text>
+                  <Text style={styles.account}>{account}</Text>
+                </View>
+                <View>
+                  <FontAwesome5Icon size={24} icon="user" />
+                </View>
+              </View>
+            </View>
             <View style={styles.listHeader}>
               <Text></Text>
               <Text style={{color: 'white'}}>Address</Text>
@@ -145,6 +162,9 @@ const styles = StyleSheet.create({
   },
   balance: {
     fontSize: 40,
+  },
+  account: {
+    fontSize: 12,
   },
   accountList: {
     color: 'black',
