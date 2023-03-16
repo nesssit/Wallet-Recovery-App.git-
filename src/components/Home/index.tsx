@@ -1,59 +1,64 @@
 import React, {useState} from 'react';
 import {Text, View, StyleSheet, Dimensions} from 'react-native';
 import {Button, TextInput, Portal, Modal} from 'react-native-paper';
+import {saveCredentialInKeyChain} from '../../packages/hooks';
+import {AccountsList} from '../../modules';
 import {mnemonicToSeedSync} from 'bip39';
 import hdKey from 'ethereumjs-wallet/src/hdkey';
-import * as Keychain from 'react-native-keychain';
-import ethers from 'ethers';
-import {FontAwesome5Icon} from 'react-native-vector-icons';
-
+import Web3 from 'web3';
+import {INFURA_URI} from '@env';
 interface Account {
   address: string;
   privateKey: string;
+  balance: string;
 }
+
 const HomeScreen: React.FC = () => {
   const [phrase, setPhrase] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [accounts, setAccounts] = useState<Account[]>([]);
-  const account = '0x51D3Ff1D169A12c496001825f8931c031B1257ac';
-  const balance = 0.0022;
 
   const handleInputChange = (value: string) => {
     setPhrase(value);
   };
 
-  const handleSavePrivateKey = async () => {
-    const token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-    const username = 'Akshay';
-  };
-
   const handleSubmit = () => {
     const seedPhase = phrase.split(' ');
-    createPrivateKey();
-    // if (seedPhase.length === 12) {
-    //   setError('');
-    // } else {
-    //   setError('Invalid Seed, 12 words are required');
-    // }
+    if (seedPhase.length === 12) {
+      setLoading(true);
+      setError('');
+      getPrivateKey();
+    } else {
+      setLoading(false);
+      setError('Invalid Seed, 12 words are required');
+    }
   };
 
-  const createPrivateKey = async () => {
-    const recoverySeed: string =
-      'hire royal wait combine embark honey arm switch under what gallery pattern';
-    const seedBuffer = await mnemonicToSeedSync(recoverySeed);
-    const root = hdKey.fromMasterSeed(seedBuffer);
-    let wallet_hdpath = "m/44'/60'/0'/0/";
-    let walletAccounts = [];
-    for (let i = 0; i < 10; i++) {
-      let wallet = root.derivePath(wallet_hdpath + i).getWallet();
-      let address = '0x' + wallet.getAddress().toString('hex');
-      let privateKey = wallet.getPrivateKey().toString('hex');
-      walletAccounts.push({address: address, privateKey: privateKey});
+  const getPrivateKey = async () => {
+    const seedBuffer = await mnemonicToSeedSync(phrase);
+    if (seedBuffer) {
+      const root = hdKey.fromMasterSeed(seedBuffer);
+      let wallet_hdpath = "m/44'/60'/0'/0/";
+      let walletAccounts: Account[] = [];
+      const web3 = new Web3(new Web3.providers.HttpProvider(INFURA_URI));
+      for (let i = 0; i < 10; i++) {
+        let wallet = root.derivePath(wallet_hdpath + i).getWallet();
+        let address = '0x' + wallet.getAddress().toString('hex');
+        const ethBalance = await web3.eth.getBalance(address);
+        const etherBalance = await web3.utils.fromWei(ethBalance, 'ether');
+        let privateKey = wallet.getPrivateKey().toString('hex');
+        saveCredentialInKeyChain({username: address, password: privateKey});
+        walletAccounts.push({address: address, privateKey: privateKey, balance: etherBalance});
+      }
+      setAccounts(walletAccounts);
+      setVisible(true);
+      setLoading(false);
+    } else {
+      setError('Invalid mnemonic phrase');
+      setLoading(false);
     }
-    setAccounts(walletAccounts);
-    setVisible(true);
   };
 
   return (
@@ -65,6 +70,7 @@ const HomeScreen: React.FC = () => {
         placeholder="Enter seed phrase"
         value={phrase}
         multiline
+        label="Enter 12 word phrase separated by space"
         error={error ? true : false}
         style={styles.seedInput}
         textColor="black"
@@ -74,43 +80,20 @@ const HomeScreen: React.FC = () => {
       <Button
         onPress={handleSubmit}
         mode="contained"
+        loading={loading}
         buttonColor="black"
         style={styles.submitButton}>
-        Generate Key
+        {loading ? 'Fetching balance' : 'Generate Keys'}
       </Button>
       <Portal>
         <Modal
           visible={visible}
-          onDismiss={() => setVisible(false)}
+          onDismiss={() => {
+            setVisible(false);
+            setPhrase('');
+          }}
           contentContainerStyle={styles.modalContainerStyle}>
-          <View>
-            <View style={styles.root}>
-              <View style={styles.ethBalanceContainer}>
-                <Text style={styles.balance}>{balance}ETH</Text>
-              </View>
-              <View style={styles.flexContainer}>
-                <View>
-                  <Text>Account</Text>
-                  <Text style={styles.account}>{account}</Text>
-                </View>
-                <View>
-                  <FontAwesome5Icon size={24} icon="user" />
-                </View>
-              </View>
-            </View>
-            <View style={styles.listHeader}>
-              <Text></Text>
-              <Text style={{color: 'white'}}>Address</Text>
-              <Text style={{color: 'white'}}>Private Key</Text>
-            </View>
-            {accounts.map((item: Account, index: number) => (
-              <View key={item.address} style={styles.accountList}>
-                <Text>{index + 1}</Text>
-                <Text numberOfLines={1}>{item.address.slice(0, 10)}...</Text>
-                <Text numberOfLines={1}>{item.privateKey.slice(0, 10)}...</Text>
-              </View>
-            ))}
-          </View>
+          <AccountsList accounts={accounts} />
         </Modal>
       </Portal>
     </View>
@@ -150,49 +133,12 @@ const styles = StyleSheet.create({
     width: '95%',
     margin: 10,
   },
-  ethBalanceContainer: {
-    backgroundColor: 'orange',
-    height: 180,
-    color: 'black',
-    width: Dimensions.get('screen').width,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  balance: {
-    fontSize: 40,
-  },
-  account: {
-    fontSize: 12,
-  },
-  accountList: {
-    color: 'black',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    margin: 2,
-    padding: 8,
-    borderWidth: 1,
-    borderRadius: 4,
-    borderColor: 'gray',
-  },
   modalContainerStyle: {
     backgroundColor: 'white',
     padding: 20,
-    width: '98%',
+    width: '95%',
+    alignSelf: 'center',
     borderRadius: 10,
     overflow: 'scroll',
-  },
-  listHeader: {
-    padding: 8,
-    backgroundColor: 'black',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    margin: 2,
-    borderRadius: 4,
   },
 });

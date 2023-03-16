@@ -10,7 +10,7 @@ const App: React.FC = () => {
     <PaperProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} options={{headerTitle: 'HomeScreen'}} />
+          <Stack.Screen name="Home" component={HomeScreen} options={{headerTitle: 'Mnenomic'}} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

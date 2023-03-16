@@ -18,7 +18,9 @@
     "@react-navigation/native-stack": "^6.9.12",
     "@react-navigation/stack": "^6.3.9",
     "@tradle/react-native-http": "^2.0.0",
+    "@types/react-native-dotenv": "^0.2.0",
     "assert": "^1.1.1",
+    "base-64": "^1.0.0",
     "bip39": "^3.1.0",
     "browserify-zlib": "~0.1.4",
     "buffer": "^4.9.2",
@@ -32,6 +34,7 @@
     "ethers": "^6.1.0",
     "events": "^1.0.0",
     "https-browserify": "~0.0.0",
+    "node-libs-browser": "^2.2.1",
     "path-browserify": "0.0.0",
     "process": "^0.11.0",
     "punycode": "^1.2.4",
@@ -40,6 +43,7 @@
     "react-native": "^0.70.6",
     "react-native-crypto": "^2.2.0",
     "react-native-crypto-js": "^1.0.0",
+    "react-native-dotenv": "^3.4.8",
     "react-native-get-random-values": "^1.8.0",
     "react-native-keychain": "^8.1.1",
     "react-native-level-fs": "^3.0.0",
@@ -60,7 +64,7 @@
     "tty-browserify": "0.0.0",
     "url": "~0.10.1",
     "vm-browserify": "0.0.4",
-    "web3": "0.20.5"
+    "web3": "^1.8.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
