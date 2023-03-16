@@ -62,3 +62,5 @@ For apple stores, first, we need a developer account followed by uploading a sig
 
 We can use Over The Air update to directly release the javascript changes to the user's phone, bypassing the store review. Microsoft CodePush provides this service so far to my knowledge.
 
+## References
+For architechture and modules like react-native-paper, refer [this](https://github.com/shreyvijayvargiya/iHateReadingLogs/tree/main/TechLogsMobile) github repositories that contains my react-native examples and experiments
