@@ -3,7 +3,7 @@ Recover your web3 wallet using a mnemonic seed phrase.
 
 The application contains one home screen where the user can enter his mnemonic seed phrase to recover his address and private key. The user address is listed in modal components so far to fulfil the requirements of showing balance along with the address. Private keys are stored in keychains or keychain stores.
 
-Currently, the Home screen contains only one Input to add 12-word phrases but we can provide 12 different input fields for that to give an intuitive interface to the user.
+Currently, the Home screen contains only one Input to add 12-word phrases but we can provide 12 different input fields for that to give an intuitive interface to the user. Due to time boundation, I can't create more intuitive UI screens and better feedback mechanism just like production based application. 
 
 We can also provide better feedback for example adding toast if the wrong seed phrase is entered. Currently, we are showing only an error message.
 
