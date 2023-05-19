@@ -7,7 +7,7 @@ interface Account {
   privateKey: string;
 }
 
-const AccountsList: React.FC<Account[]> = ({accounts}) => {
+const AccountsList: React.FC<Account[]> = accounts => {
   return (
     <View>
       <View>
